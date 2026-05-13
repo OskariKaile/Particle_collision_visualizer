@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ░█████╗░░██╗░░██╗
+  ██╔══██╗░██║░██╔╝
+  ██║░░██║░█████╔╝░
+  ██║░░██║░██╔═██╗░
+  ╚█████╔╝░██║░░██╗
+  ░╚════╝░░╚═╝░░╚═╝
+-->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="LHC Event Display is an interactive 3D particle collision visualizer by Oskari Kaile — real CMS Open Data from CERN pp collisions at √s = 13 TeV, rendered in WebGL." />
+  <meta name="author" content="Oskari Kaile" />
+  <meta name="robots" content="index, follow" />
+  <title>LHC Event Display — Particle Collision Visualizer · Oskari Kaile</title>
+
+  <meta property="og:title" content="LHC Event Display — Particle Collision Visualizer · Oskari Kaile" />
+  <meta property="og:description" content="Interactive 3D visualizer of real CERN CMS Open Data — proton-proton collisions at √s = 13 TeV. Built by Oskari Kaile." />
+  <meta property="og:url" content="https://oskarikaile.github.io/lhc-event-display/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Oskari Kaile" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="LHC Event Display — Particle Collision Visualizer · Oskari Kaile" />
+  <meta name="twitter:description" content="Interactive 3D visualizer of real CERN CMS Open Data — proton-proton collisions at √s = 13 TeV." />
+  <meta name="twitter:creator" content="@oskarikaile" />
+
+  <link rel="canonical" href="https://oskarikaile.github.io/lhc-event-display/" />
+  <link rel="author" href="https://oskarikaile.github.io/" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "LHC Event Display — Particle Collision Visualizer",
+    "description": "Interactive 3D visualizer of real particle collision events from CERN CMS Open Data (pp collisions, √s = 13 TeV).",
+    "url": "https://oskarikaile.github.io/lhc-event-display/",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web",
+    "author": {
+      "@type": "Person",
+      "name": "Oskari Kaile",
+      "url": "https://oskarikaile.github.io/"
+    },
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Oskari Kaile",
+      "url": "https://oskarikaile.github.io/"
+    }
+  }
+  </script>
+  <link rel="icon" type="image/png" href="/assets/O.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@300;400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div id="canvas-container"></div>
+<div class="vignette"></div>
+<div class="scanlines"></div>
+
+<!-- Loading -->
+<div id="loader">
+  <div class="loader-text">LHC Event Display</div>
+  <div class="loader-sub">CMS Open Data / Run 2 / 13 TeV</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- ──────────────────────────────────────────────────────────
+     Brand badge (top-left) — matches HELIOS signature
+     ────────────────────────────────────────────────────────── -->
+<header class="brand panel" id="header">
+  <div class="hud__corner hud__corner--tl"></div>
+  <div class="hud__corner hud__corner--tr"></div>
+  <div class="hud__corner hud__corner--bl"></div>
+  <div class="hud__corner hud__corner--br"></div>
+  <div class="brand__mark">
+    <img src="./assets/O-logo.png" alt="Oskari Kaile" />
+  </div>
+  <div class="brand__text">
+    <div class="brand__name">LHC Event Display</div>
+    <div class="brand__sub">CMS Open Data · pp √s = 13 TeV · v1.0</div>
+    <div class="brand__sub"><a href="https://oskarikaile.github.io/" target="_blank" rel="noopener noreferrer">By Oskari Kaile</a></div>
+  </div>
+</header>
+
+<!-- Event info -->
+<div class="panel" id="event-info">
+  <div class="label">// CURRENT EVENT</div>
+  <div class="event-title" id="ei-title">—</div>
+  <div class="row"><span class="k">Run</span><span class="v" id="ei-run">—</span></div>
+  <div class="row"><span class="k">Event ID</span><span class="v" id="ei-evt">—</span></div>
+  <div class="row"><span class="k">√s</span><span class="v" id="ei-cm">13.0<span class="unit">TeV</span></span></div>
+  <div class="row"><span class="k">∑ ET</span><span class="v" id="ei-set">—<span class="unit">GeV</span></span></div>
+  <div class="row"><span class="k">Missing ET</span><span class="v" id="ei-met">—<span class="unit">GeV</span></span></div>
+  <div class="row"><span class="k">Particles</span><span class="v" id="ei-np">—</span></div>
+  <div class="row"><span class="k">Jets (R=0.4)</span><span class="v" id="ei-nj">—</span></div>
+  <div class="row"><span class="k">Vertices</span><span class="v" id="ei-nv">—</span></div>
+</div>
+
+<!-- Legend -->
+<div class="panel" id="legend">
+  <div class="title">// PARTICLE TYPES</div>
+  <div class="legend-item" data-type="electron">
+    <span class="swatch" style="background:var(--c-electron);color:var(--c-electron)"></span>
+    <span class="name">Electron / e±</span>
+    <span class="count" id="lc-electron">0</span>
+  </div>
+  <div class="legend-item" data-type="muon">
+    <span class="swatch" style="background:var(--c-muon);color:var(--c-muon)"></span>
+    <span class="name">Muon / μ±</span>
+    <span class="count" id="lc-muon">0</span>
+  </div>
+  <div class="legend-item" data-type="photon">
+    <span class="swatch dot" style="background:var(--c-photon);color:var(--c-photon)"></span>
+    <span class="name">Photon / γ</span>
+    <span class="count" id="lc-photon">0</span>
+  </div>
+  <div class="legend-item" data-type="chad">
+    <span class="swatch" style="background:var(--c-chad);color:var(--c-chad)"></span>
+    <span class="name">Charged hadron</span>
+    <span class="count" id="lc-chad">0</span>
+  </div>
+  <div class="legend-item" data-type="nhad">
+    <span class="swatch dot" style="background:var(--c-nhad);color:var(--c-nhad)"></span>
+    <span class="name">Neutral hadron</span>
+    <span class="count" id="lc-nhad">0</span>
+  </div>
+  <div class="legend-item" data-type="jet">
+    <span class="swatch dot" style="background:var(--c-jet);color:var(--c-jet);width:10px;height:10px"></span>
+    <span class="name">Jet axis</span>
+    <span class="count" id="lc-jet">0</span>
+  </div>
+  <div class="legend-item" data-type="met">
+    <span class="swatch dot" style="background:var(--c-met);color:var(--c-met);width:10px;height:10px"></span>
+    <span class="name">Missing ET ν</span>
+    <span class="count" id="lc-met">0</span>
+  </div>
+</div>
+
+<!-- Controls -->
+<div class="panel" id="controls">
+  <div class="title">// EVENT NAVIGATION</div>
+  <div class="btn-row">
+    <button class="btn" id="btn-prev">◂ Prev</button>
+    <button class="btn primary wide" id="btn-replay">▶ Replay</button>
+    <button class="btn" id="btn-next">Next ▸</button>
+  </div>
+  <div class="event-pills" id="event-pills"></div>
+  <div class="title" style="margin-top:14px">// VIEW</div>
+  <div class="btn-row">
+    <button class="btn" data-view="3d">3D</button>
+    <button class="btn" data-view="rphi">r-φ</button>
+    <button class="btn" data-view="rz">r-z</button>
+  </div>
+  <input type="range" id="speed-slider" min="0.2" max="3" step="0.1" value="1">
+  <div class="slider-row">
+    <span>Animation Speed</span>
+    <span class="v" id="speed-val">1.0×</span>
+  </div>
+</div>
+
+<!-- Particle list -->
+<div class="panel" id="particle-list">
+  <div class="title">// PARTICLE FLOW</div>
+  <div class="header-row">
+    <span></span>
+    <span>Type</span>
+    <span style="text-align:right">pT</span>
+    <span style="text-align:right">η</span>
+  </div>
+  <div class="body" id="pl-body"></div>
+</div>
+
+<!-- Axis indicator -->
+<div id="axis-indicator">
+  <div class="coords">
+    <span><span class="label">BEAM:</span><span class="z">Z</span></span>
+    <span><span class="label">UP:</span><span class="y">Y</span></span>
+    <span><span class="label">RADIAL:</span><span class="x">X</span></span>
+    <span><span class="label">B-FIELD:</span> 3.8 T</span>
+  </div>
+</div>
+
+<!-- Hint -->
+<div id="hint">
+  <div><kbd id="hint-drag">DRAG</kbd>orbit camera</div>
+  <div><kbd id="hint-scroll">SCROLL</kbd>zoom</div>
+  <div><kbd id="hint-shift">SHIFT+DRAG</kbd>pan</div>
+</div>
+
+<!-- Tooltip -->
+<div id="tooltip">
+  <div class="ttype">—</div>
+  <div class="trow"><span>pT</span><span class="v">—</span></div>
+  <div class="trow"><span>η</span><span class="v">—</span></div>
+  <div class="trow"><span>φ</span><span class="v">—</span></div>
+  <div class="trow"><span>Energy</span><span class="v">—</span></div>
+  <div class="trow"><span>Charge</span><span class="v">—</span></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
