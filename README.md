@@ -72,12 +72,13 @@ An interactive 3D particle collision visualizer rendered in the browser. Explore
 ## Project structure
 
 ```
-├── index.html     # Shell, HUD markup, panel layout
-├── styles.css     # All styles — observatory aesthetic
-├── main.js        # Three.js scene, physics generators, animation loop
+├── index.html              # Shell, HUD markup, panel layout
+├── styles.css              # All styles — observatory aesthetic
+├── main.js                 # Three.js scene, physics generators, animation loop
 └── assets/
-    ├── O-logo.png # Logo
-    └── O.png      # Mini logo
+    ├── O-logo.png          # Logo
+    └── O.png               # Mini logo
+    └── screenshot.png      # Screenshot of the project
 ```
 
 ---
