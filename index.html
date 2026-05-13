@@ -18,7 +18,7 @@
 
   <meta property="og:title" content="LHC Event Display — Particle Collision Visualizer · Oskari Kaile" />
   <meta property="og:description" content="Interactive 3D visualizer of real CERN CMS Open Data — proton-proton collisions at √s = 13 TeV. Built by Oskari Kaile." />
-  <meta property="og:url" content="https://oskarikaile.github.io/lhc-event-display/" />
+  <meta property="og:url" content="https://oskarikaile.github.io/Particle_collision_visualizer/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Oskari Kaile" />
 
@@ -27,7 +27,7 @@
   <meta name="twitter:description" content="Interactive 3D visualizer of real CERN CMS Open Data — proton-proton collisions at √s = 13 TeV." />
   <meta name="twitter:creator" content="@oskarikaile" />
 
-  <link rel="canonical" href="https://oskarikaile.github.io/lhc-event-display/" />
+  <link rel="canonical" href="https://oskarikaile.github.io/Particle_collision_visualizer" />
   <link rel="author" href="https://oskarikaile.github.io/" />
 
   <script type="application/ld+json">
@@ -36,7 +36,7 @@
     "@type": "WebApplication",
     "name": "LHC Event Display — Particle Collision Visualizer",
     "description": "Interactive 3D visualizer of real particle collision events from CERN CMS Open Data (pp collisions, √s = 13 TeV).",
-    "url": "https://oskarikaile.github.io/lhc-event-display/",
+    "url": "https://oskarikaile.github.io/Particle_collision_visualizer/",
     "applicationCategory": "EducationalApplication",
     "operatingSystem": "Web",
     "author": {
@@ -229,6 +229,27 @@
   <div class="trow"><span>Energy</span><span class="v">—</span></div>
   <div class="trow"><span>Charge</span><span class="v">—</span></div>
 </div>
+
+<!-- Mobile nav bar (hidden on desktop) -->
+<nav id="mobile-nav" aria-label="Panels">
+  <button class="mnav-btn" data-target="event-info">
+    <span class="mnav-icon">◈</span>
+    <span class="mnav-label">EVENT</span>
+  </button>
+  <button class="mnav-btn" data-target="legend">
+    <span class="mnav-icon">◉</span>
+    <span class="mnav-label">TYPES</span>
+  </button>
+  <button class="mnav-btn" data-target="controls">
+    <span class="mnav-icon">⇄</span>
+    <span class="mnav-label">NAV</span>
+  </button>
+  <button class="mnav-btn" data-target="camera-controls">
+    <span class="mnav-icon">⊕</span>
+    <span class="mnav-label">CAMERA</span>
+  </button>
+</nav>
+<div id="mobile-backdrop"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="main.js"></script>

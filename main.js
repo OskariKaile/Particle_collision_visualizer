@@ -1022,3 +1022,36 @@ boot();
     scrollTimer = setTimeout(() => kbdScroll.classList.remove('is-pressed'), 350);
   }, { passive: true });
 })();
+
+// ----- Mobile panel navigation --------------------------------
+(function () {
+  const nav      = document.getElementById('mobile-nav');
+  const backdrop = document.getElementById('mobile-backdrop');
+  if (!nav) return;
+
+  let activePanel = null;
+  let activeBtn   = null;
+
+  function closeAll() {
+    if (activePanel) activePanel.classList.remove('is-mobile-open');
+    if (activeBtn)   activeBtn.classList.remove('is-active');
+    backdrop.classList.remove('is-visible');
+    activePanel = activeBtn = null;
+  }
+
+  nav.querySelectorAll('.mnav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const panel = document.getElementById(btn.dataset.target);
+      if (!panel) return;
+      if (activePanel === panel) { closeAll(); return; }
+      closeAll();
+      panel.classList.add('is-mobile-open');
+      btn.classList.add('is-active');
+      backdrop.classList.add('is-visible');
+      activePanel = panel;
+      activeBtn   = btn;
+    });
+  });
+
+  backdrop.addEventListener('click', closeAll);
+})();
