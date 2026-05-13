@@ -67,21 +67,33 @@
 <div class="vignette"></div>
 <div class="scanlines"></div>
 
-<!-- Loading -->
-<div id="loader">
-  <div class="loader-text">LHC Event Display</div>
-  <div class="loader-sub">CMS Open Data / Run 2 / 13 TeV</div>
-  <div class="loader-bar"></div>
+<!-- Boot / loading screen -->
+<div id="boot" class="boot">
+  <div class="boot__frame">
+    <div class="boot__brackets" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="boot__label">LHC EVENT DISPLAY // CMS OPEN DATA</div>
+    <h1 class="boot__title">Particle Collision Visualizer</h1>
+    <p class="boot__sub">
+      Loading real <em>CMS Open Data</em> — proton-proton collisions at <em>√s = 13 TeV</em>.
+    </p>
+    <div class="boot__bar">
+      <div class="boot__fill" id="bootFill"></div>
+    </div>
+    <div class="boot__status" id="bootStatus">INITIALIZING…</div>
+    <div class="boot__meta">
+      <span>SRC · CERN CMS Open Data</span>
+      <span>RUN 2 · 13 TeV</span>
+    </div>
+  </div>
 </div>
 
 <!-- ──────────────────────────────────────────────────────────
      Brand badge (top-left) — matches HELIOS signature
      ────────────────────────────────────────────────────────── -->
 <header class="brand panel" id="header">
-  <div class="hud__corner hud__corner--tl"></div>
-  <div class="hud__corner hud__corner--tr"></div>
-  <div class="hud__corner hud__corner--bl"></div>
-  <div class="hud__corner hud__corner--br"></div>
+
   <div class="brand__mark">
     <img src="./assets/O-logo.png" alt="Oskari Kaile" />
   </div>
@@ -105,6 +117,9 @@
   <div class="row"><span class="k">Jets (R=0.4)</span><span class="v" id="ei-nj">—</span></div>
   <div class="row"><span class="k">Vertices</span><span class="v" id="ei-nv">—</span></div>
 </div>
+
+<!-- Bottom-left: legend + camera controls side by side -->
+<div class="hud-row--bl">
 
 <!-- Legend -->
 <div class="panel" id="legend">
@@ -145,6 +160,20 @@
     <span class="count" id="lc-met">0</span>
   </div>
 </div>
+
+<!-- Camera controls -->
+<div class="panel" id="camera-controls">
+
+  <div class="cam-title">// CAMERA CONTROLS</div>
+  <ul class="cam-list">
+    <li><kbd id="hint-drag">DRAG</kbd><span>orbit camera</span></li>
+    <li><kbd id="hint-scroll">SCROLL</kbd><span>zoom</span></li>
+    <li><kbd id="hint-shift">SHIFT</kbd><kbd>+DRAG</kbd><span>pan</span></li>
+  </ul>
+  <button id="btn-reset-cam" class="btn-reset-cam">RESET CAMERA</button>
+</div>
+
+</div><!-- /.hud-row--bl -->
 
 <!-- Controls -->
 <div class="panel" id="controls">
@@ -190,12 +219,6 @@
   </div>
 </div>
 
-<!-- Hint -->
-<div id="hint">
-  <div><kbd id="hint-drag">DRAG</kbd>orbit camera</div>
-  <div><kbd id="hint-scroll">SCROLL</kbd>zoom</div>
-  <div><kbd id="hint-shift">SHIFT+DRAG</kbd>pan</div>
-</div>
 
 <!-- Tooltip -->
 <div id="tooltip">

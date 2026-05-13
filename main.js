@@ -57,7 +57,7 @@ class OrbitCam {
     this.minPolar = 0.05;
     this.maxPolar = Math.PI - 0.05;
     this.dampingFactor = 0.08;
-    this.rotateSpeed = 1;
+    this.rotateSpeed = 0.4;
     this.zoomSpeed = 0.95;
     this.panSpeed = 1;
     this.autoRotate = true;
@@ -118,6 +118,16 @@ class OrbitCam {
     v.setFromMatrixColumn(this.camera.matrix, 1); v.multiplyScalar(dy * factor * this.panSpeed);
     this.panOffset.add(v);
   }
+  reset() {
+    this.target.set(0, 0, 0);
+    this.camera.position.set(11, 6, 11);
+    this.camera.lookAt(this.target);
+    this.spherical.setFromVector3(new THREE.Vector3(11, 6, 11));
+    this.sphericalDelta.set(0, 0, 0);
+    this.panOffset.set(0, 0, 0);
+    this.scale = 1;
+    this.autoRotate = true;
+  }
   setFromCamera() {
     const offset = new THREE.Vector3().copy(this.camera.position).sub(this.target);
     this.spherical.setFromVector3(offset);
@@ -143,6 +153,7 @@ class OrbitCam {
 }
 
 const controls = new OrbitCam(camera, renderer.domElement);
+document.getElementById('btn-reset-cam').addEventListener('click', () => controls.reset());
 
 // ----- Helper: build a cylinder shell wireframe --------------
 function makeShell(rInner, rOuter, halfLen, color, opacity, segments = 48) {
@@ -958,12 +969,29 @@ function loop() {
 
 // ----- Boot -------------------------------------------------
 function boot() {
-  initUI();
-  loadEventByIndex(0);
+  const bootEl    = document.getElementById('boot');
+  const bootFill  = document.getElementById('bootFill');
+  const bootStatus = document.getElementById('bootStatus');
+
+  function setProgress(p) { bootFill.style.right = ((1 - p) * 100).toFixed(2) + '%'; }
+  function setStatus(msg)  { bootStatus.textContent = msg; }
+
+  setProgress(0.15);
+  setStatus('LOADING EVENT DATA…');
+
   setTimeout(() => {
-    document.getElementById('loader').classList.add('hidden');
-  }, 800);
-  loop();
+    initUI();
+    loadEventByIndex(0);
+    setProgress(0.65);
+    setStatus('INITIALIZING WEBGL…');
+
+    setTimeout(() => {
+      setProgress(1);
+      setStatus('READY');
+      loop();
+      bootEl.classList.add('is-done');
+    }, 380);
+  }, 220);
 }
 
 boot();
